@@ -51,6 +51,9 @@ func main() {
 	var config Config
 	err = yaml.Unmarshal(configData, &config)
 	if err != nil {
+		fmt.Println("===配置文件内容===")
+		fmt.Printf("%v", string(configData))
+
 		log.Fatalf("解析配置文件失败: %v", err)
 	}
 
