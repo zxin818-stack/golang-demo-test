@@ -7,7 +7,7 @@ RUN mkdir -p /config_file && chmod 777 /config_file
 COPY golang-demo-test /main
 
 # 复制配置文件
-COPY config.yaml /config.yaml
+#COPY config.yaml /config.yaml
 
 # 暴露端口
 EXPOSE 8080
