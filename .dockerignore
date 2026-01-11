@@ -1,0 +1,23 @@
+# 忽略Git相关文件
+.git
+.gitignore
+
+# 忽略Docker相关文件
+Dockerfile
+.dockerignore
+
+# 忽略IDE配置文件
+.vscode
+.idea
+*.swp
+*.swo
+
+# 忽略测试和文档文件
+README.md
+*.test
+
+# 忽略临时文件和构建产物
+tmp/
+temp/
+build/
+dist/

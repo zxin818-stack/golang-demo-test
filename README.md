@@ -121,6 +121,70 @@ curl http://localhost:8080/getconfig
 - 程序启动后会同时打印配置信息到控制台和启动HTTP服务器
 - 可以通过配置文件灵活调整服务器端口和其他参数
 
+## Docker部署
+
+### 构建Docker镜像
+
+```bash
+# 在项目根目录下构建Docker镜像
+docker build -t golang-demo-test .
+
+# 或者指定标签版本
+docker build -t golang-demo-test:latest .
+```
+
+### 运行Docker容器
+
+```bash
+# 基本运行（使用镜像内的默认配置文件）
+docker run -p 8080:8080 golang-demo-test
+
+# 使用自定义配置文件（挂载本地配置文件）
+docker run -p 8080:8080 -v /path/to/your/config.yaml:/root/config.yaml golang-demo-test
+
+# 后台运行
+docker run -d -p 8080:8080 --name config-server golang-demo-test
+
+# 使用自定义环境变量
+docker run -p 8080:8080 -e LOCAL_CONFIG_PATH=/custom/path/config.yaml golang-demo-test
+```
+
+### 验证部署
+
+```bash
+# 检查容器是否运行
+docker ps
+
+# 查看容器日志
+docker logs config-server
+
+# 测试HTTP接口
+curl http://localhost:8080/getconfig
+```
+
+### Docker Compose部署（可选）
+
+创建`docker-compose.yml`文件：
+
+```yaml
+version: '3.8'
+services:
+  config-server:
+    image: golang-demo-test:latest
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - LOCAL_CONFIG_PATH=/root/config.yaml
+    volumes:
+      - ./config.yaml:/root/config.yaml
+```
+
+运行：
+```bash
+docker-compose up -d
+```
+
 ## 配置文件格式
 
 配置文件使用YAML格式，支持嵌套结构：
