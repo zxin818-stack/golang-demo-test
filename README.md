@@ -123,15 +123,45 @@ curl http://localhost:8080/getconfig
 
 ## Docker部署
 
-### 构建Docker镜像
+### 构建流程
 
+1. **首先在本地编译Go程序**：
 ```bash
-# 在项目根目录下构建Docker镜像
+# 使用静态链接编译，确保在scratch镜像中正常运行
+CGO_ENABLED=0 GOOS=linux go build -o main .
+```
+
+2. **构建Docker镜像**：
+```bash
+# 在项目根目录下构建Docker镜像（使用scratch镜像，无需网络依赖）
 docker build -t golang-demo-test .
 
 # 或者指定标签版本
 docker build -t golang-demo-test:latest .
 ```
+
+**注意**：Dockerfile使用多阶段构建：
+- 第一阶段使用Alpine镜像创建/config_file目录并设置777权限（所有用户可读写执行）
+- 第二阶段使用scratch镜像运行程序
+- 请确保在构建Docker镜像前已经执行了本地编译步骤
+- 构建过程需要网络连接来下载Alpine镜像
+
+### 使用构建脚本（推荐）
+
+项目提供了一个构建脚本 `build.sh` 来自动化整个构建流程：
+
+```bash
+# 给脚本添加执行权限
+chmod +x build.sh
+
+# 运行构建脚本
+./build.sh
+```
+
+该脚本会自动完成以下步骤：
+1. 编译Go程序（静态链接）
+2. 构建Docker镜像
+3. 提供运行容器的命令示例
 
 ### 运行Docker容器
 
